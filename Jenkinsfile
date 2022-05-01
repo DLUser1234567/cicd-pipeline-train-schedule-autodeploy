@@ -25,7 +25,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com','GitHub_Cred') {
+                    docker.withRegistry('https://registry.hub.docker.com','gitcred') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
@@ -40,7 +40,7 @@ pipeline {
             }
             steps {
                 kubernetesDeploy(
-                    kubeconfigId: 'Kubernetes',
+                    kubeconfigId: 'kubernetes',
                     configs: 'train-schedule-kube-canary.yml',
                     enableConfigSubstitution: true
                 )
@@ -54,12 +54,12 @@ pipeline {
                 input 'Deploy to Production?'
                 milestone(1)
                 kubernetesDeploy(
-                    kubeconfigId: 'Kubernetes',
+                    kubeconfigId: 'kubernetes',
                     configs: 'train-schedule-kube-canary.yml',
                     enableConfigSubstitution: true
                 )
                 kubernetesDeploy(
-                    kubeconfigId: 'Kubernetes',
+                    kubeconfigId: 'kubernetes',
                     configs: 'train-schedule-kube.yml',
                     enableConfigSubstitution: true
                 )
